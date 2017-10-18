@@ -46,9 +46,22 @@
 
 
 
+<div class="input-group">
+      <span class="input-group-addon" id="inputLabel1">Starting Sticks</span>
+      <input type="number" name="startingsticks" min="1" max="1000" value="21" id="sticksInput">
+</div>
+<div class="input-group">
+      <span class="input-group-addon" id="inputLabel2">Max Move Size</span>
+      <input type="number" name="startingsticks" min="1" max="1000" value="2" id="moveInput">
+</div>
+<div class="input-group">
+      <span class="input-group-btn">
+        <button class="btn btn-secondary" type="button" onclick="start_game()" id="startGameButton">Start Game</button>
+      </span>
+</div>
 
 <div class="input-group">
-      <span class="input-group-addon" id="basic-addon3">Sticks to remove</span>
+      <span class="input-group-addon" id="inputLabel3">Sticks to remove</span>
       <input type="number" name="playermove" min="1" max="2" value="1" id="playerInput">
 </div>
 <div class="input-group">
@@ -58,7 +71,18 @@
 </div>
 
 
-
+<table class="table table-striped table-hover table-responsive" id="moveTable">
+  <thead>
+    <tr>
+      <th>Move</th>
+      <th>Turn</th>
+      <th>Sticks Remaining</th>
+      <th>Move Decision</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>
 
   <script
   src="https://code.jquery.com/jquery-3.2.1.js"
