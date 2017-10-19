@@ -3,11 +3,14 @@ function sleep(ms) {
 }
 
 function start_game(){
+    max_move_size = parseInt(document.getElementById("moveInput").value)
+    total_sticks = parseInt(document.getElementById("sticksInput").value)
+    if(max_move_size < 1 || total_sticks < 1){
+        return
+    }
     $('#moveInput')[0].disabled = true
     $('#sticksInput')[0].disabled = true
     $('#startGameButton')[0].style.visibility = "hidden"
-    max_move_size = parseInt(document.getElementById("moveInput").value)
-    total_sticks = parseInt(document.getElementById("sticksInput").value)
     show_game()
     add_row("Human", "?")
 }
@@ -27,6 +30,9 @@ function show_game(){
 }
 
 function add_row(player, move){
+    human_color = "LightGray"
+    computer_color = "WhiteSmoke"
+
     var newRow = $("<tr>");
     var cols = "";
     cols += '<th scope="row">' + move_counter + '</th>';
@@ -35,39 +41,69 @@ function add_row(player, move){
     cols += '<td>' + move + '</td>'
     newRow.append(cols);
     $("#moveTable").prepend(newRow)
+    row_human = true 
+    if(player == "Computer"){
+        row_human = false 
+    }
+
+    table_rows = $("#moveTable")[0].rows
+    for (i = 1; i < table_rows.length; i++){
+        if(row_human){
+            table_rows[i].style.backgroundColor = human_color
+        }
+        else{
+            table_rows[i].style.backgroundColor = computer_color
+        }
+        row_human = !row_human
+    }
 }
 
 function calculate_optimal_move(){
     ideal_step = (total_sticks-1)%(max_move_size+1)
-    console.log(ideal_step)
     if(ideal_step == 0){
         ideal_step = Math.floor(Math.random()*max_move_size + 1)
-        console.log(ideal_step)
     }
-    return Math.max(ideal_step, 0)
+    return Math.min(ideal_step, total_sticks)
 }
 
 function check_for_win(){
     if(total_sticks <= 0){
         game_over = true 
+        if(player_turn){
+            message = "You lost, better luck next time"
+            $('#alert_placeholder').html('<div class="alert alert-danger"><span>'+message+'</span></div>')
+        }
+        else{
+            message = "Well done, you won!"
+            $('#alert_placeholder').html('<div class="alert alert-success"><span>'+message+'</span></div>')
+        }
     }
 }
 
 // take turn button
-function take_turn() {
+function take_human_turn() {
     if(!game_over){
-        player_input = document.getElementById("playerInput")
+        $('#moveButton')[0].disabled = true
+        player_move = parseInt(document.getElementById("playerInput").value)
             // validate that option in turn is good, else print error message
-        
+        if(player_move > max_move_size || player_move < 1 || player_move > total_sticks){
+            return
+        }
         // subtract the user input from number of sticks
-        player_move = parseInt(player_input.value)
         total_sticks -= player_move
         $("#moveTable")[0].rows[1].cells[3].innerHTML = player_move 
 
-        console.log("You removed " + player_input.value + " sticks, current total = " + total_sticks)
+        console.log("You removed " + player_move + " sticks, current total = " + total_sticks)
         move_counter += 1
     }
     check_for_win()
+    if (!game_over) {
+        player_turn = false;
+        setTimeout(take_computer_turn, 500)
+    }
+}
+
+function take_computer_turn(){
     if(!game_over){    
         
         computer_move = calculate_optimal_move()
@@ -75,23 +111,25 @@ function take_turn() {
         total_sticks -= computer_move
         console.log("I removed " + computer_move + " sticks, current total = " + total_sticks)
         move_counter += 1
-        check_for_win()
 
-        add_row("Human", "?")
-
-
-
-        // update table
-        // check for win condition
-        // calculate optimal move
-        // check for win condition
+    }
+    check_for_win()
+    player_turn=true;
+    if(!game_over){
+        setTimeout(add_human_prompt, 500)
     }
 }
 
-player_input_form = document.getElementById("playerInputForm")
-player_input_form
-var max_move_size = 4;
-var total_sticks = 21;
+function add_human_prompt(){
+    if(!game_over){
+        add_row("Human", "?")
+        $('#moveButton')[0].disabled = false
+    }
+}
+
+var player_turn = true;
+var max_move_size = -1;
+var total_sticks = -1;
 var move_counter = 1;
 var game_over = false
 hide_game()
