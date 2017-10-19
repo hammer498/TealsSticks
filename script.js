@@ -41,9 +41,9 @@ function add_row(player, move){
     cols += '<td>' + move + '</td>'
     newRow.append(cols);
     $("#moveTable").prepend(newRow)
-    row_human = true 
+    row_human = true
     if(player == "Computer"){
-        row_human = false 
+        row_human = false
     }
 
     table_rows = $("#moveTable")[0].rows
@@ -68,7 +68,7 @@ function calculate_optimal_move(){
 
 function check_for_win(){
     if(total_sticks <= 0){
-        game_over = true 
+        game_over = true
         if(player_turn){
             message = "You lost, better luck next time"
             $('#alert_placeholder').html('<div class="alert alert-danger"><span>'+message+'</span></div>')
@@ -83,15 +83,15 @@ function check_for_win(){
 // take turn button
 function take_human_turn() {
     if(!game_over){
-        $('#moveButton')[0].disabled = true
         player_move = parseInt(document.getElementById("playerInput").value)
             // validate that option in turn is good, else print error message
         if(player_move > max_move_size || player_move < 1 || player_move > total_sticks){
             return
         }
+        $('#moveButton')[0].disabled = true
         // subtract the user input from number of sticks
         total_sticks -= player_move
-        $("#moveTable")[0].rows[1].cells[3].innerHTML = player_move 
+        $("#moveTable")[0].rows[1].cells[3].innerHTML = player_move
 
         console.log("You removed " + player_move + " sticks, current total = " + total_sticks)
         move_counter += 1
@@ -104,10 +104,10 @@ function take_human_turn() {
 }
 
 function take_computer_turn(){
-    if(!game_over){    
-        
+    if(!game_over){
+
         computer_move = calculate_optimal_move()
-        add_row("Computer", computer_move)    
+        add_row("Computer", computer_move)
         total_sticks -= computer_move
         console.log("I removed " + computer_move + " sticks, current total = " + total_sticks)
         move_counter += 1
